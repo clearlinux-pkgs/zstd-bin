@@ -1,0 +1,10 @@
+--- zstd-1.5.0/Makefile~	2021-05-14 14:59:34.000000000 +0000
++++ zstd-1.5.0/Makefile	2021-10-11 18:11:26.311244614 +0000
+@@ -180,7 +180,6 @@
+ 
+ .PHONY: install armtest usan asan uasan msan asan32
+ install:
+-	$(Q)$(MAKE) -C $(ZSTDDIR) $@
+ 	$(Q)$(MAKE) -C $(PRGDIR) $@
+ 
+ .PHONY: uninstall

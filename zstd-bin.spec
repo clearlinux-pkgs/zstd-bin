@@ -7,7 +7,7 @@
 %define keepstatic 1
 Name     : zstd-bin
 Version  : 1.5.0
-Release  : 79
+Release  : 80
 URL      : https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz
 Source0  : https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz
 Source1  : https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz.sig
@@ -16,7 +16,6 @@ Group    : Development/Tools
 License  : BSD-3-Clause GPL-2.0
 Requires: zstd-bin-bin = %{version}-%{release}
 Requires: zstd-bin-filemap = %{version}-%{release}
-Requires: zstd-bin-lib = %{version}-%{release}
 Requires: zstd-bin-license = %{version}-%{release}
 Requires: zstd-bin-man = %{version}-%{release}
 BuildRequires : buildreq-cmake
@@ -36,6 +35,7 @@ Patch1: multi-thread-default.patch
 Patch2: notrace.patch
 Patch3: fopen-use-m.patch
 Patch4: allowpgo.patch
+Patch5: nolib.patch
 
 %description
 Zstandard, or zstd as short version, is a fast lossless compression algorithm,
@@ -55,34 +55,12 @@ Requires: zstd-bin-filemap = %{version}-%{release}
 bin components for the zstd-bin package.
 
 
-%package dev
-Summary: dev components for the zstd-bin package.
-Group: Development
-Requires: zstd-bin-lib = %{version}-%{release}
-Requires: zstd-bin-bin = %{version}-%{release}
-Provides: zstd-bin-devel = %{version}-%{release}
-Requires: zstd-bin = %{version}-%{release}
-
-%description dev
-dev components for the zstd-bin package.
-
-
 %package filemap
 Summary: filemap components for the zstd-bin package.
 Group: Default
 
 %description filemap
 filemap components for the zstd-bin package.
-
-
-%package lib
-Summary: lib components for the zstd-bin package.
-Group: Libraries
-Requires: zstd-bin-license = %{version}-%{release}
-Requires: zstd-bin-filemap = %{version}-%{release}
-
-%description lib
-lib components for the zstd-bin package.
 
 
 %package license
@@ -101,15 +79,6 @@ Group: Default
 man components for the zstd-bin package.
 
 
-%package staticdev
-Summary: staticdev components for the zstd-bin package.
-Group: Default
-Requires: zstd-bin-dev = %{version}-%{release}
-
-%description staticdev
-staticdev components for the zstd-bin package.
-
-
 %prep
 %setup -q -n zstd-1.5.0
 cd %{_builddir}/zstd-1.5.0
@@ -117,6 +86,7 @@ cd %{_builddir}/zstd-1.5.0
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 pushd ..
 cp -a zstd-1.5.0 build32
 popd
@@ -132,7 +102,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1633975712
+export SOURCE_DATE_EPOCH=1633976352
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -187,7 +157,7 @@ make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1633975712
+export SOURCE_DATE_EPOCH=1633976352
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/zstd-bin
 cp %{_builddir}/zstd-1.5.0/COPYING %{buildroot}/usr/share/package-licenses/zstd-bin/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8
@@ -230,23 +200,9 @@ popd
 /usr/bin/zstdmt
 /usr/share/clear/optimized-elf/bin*
 
-%files dev
-%defattr(-,root,root,-)
-/usr/include/zdict.h
-/usr/include/zstd.h
-/usr/include/zstd_errors.h
-/usr/lib64/libzstd.so
-/usr/lib64/pkgconfig/libzstd.pc
-
 %files filemap
 %defattr(-,root,root,-)
 /usr/share/clear/filemap/filemap-zstd-bin
-
-%files lib
-%defattr(-,root,root,-)
-/usr/lib64/libzstd.so.1
-/usr/lib64/libzstd.so.1.5.0
-/usr/share/clear/optimized-elf/lib*
 
 %files license
 %defattr(0644,root,root,0755)
@@ -260,7 +216,3 @@ popd
 /usr/share/man/man1/zstdcat.1
 /usr/share/man/man1/zstdgrep.1
 /usr/share/man/man1/zstdless.1
-
-%files staticdev
-%defattr(-,root,root,-)
-/usr/lib64/libzstd.a
