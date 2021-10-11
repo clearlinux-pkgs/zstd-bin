@@ -1,0 +1,8 @@
+# This file contains additional build requirements that did not get
+# picked up automatically. One name per line, no whitespace.
+zlib-dev
+xz-dev
+lz4-dev
+zlib-dev32
+xz-dev32
+lz4-dev32
