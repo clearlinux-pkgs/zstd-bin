@@ -7,7 +7,7 @@
 %define keepstatic 1
 Name     : zstd-bin
 Version  : 1.5.0
-Release  : 78
+Release  : 79
 URL      : https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz
 Source0  : https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz
 Source1  : https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz.sig
@@ -21,6 +21,11 @@ Requires: zstd-bin-license = %{version}-%{release}
 Requires: zstd-bin-man = %{version}-%{release}
 BuildRequires : buildreq-cmake
 BuildRequires : buildreq-meson
+BuildRequires : gcc-dev32
+BuildRequires : gcc-libgcc32
+BuildRequires : gcc-libstdc++32
+BuildRequires : glibc-dev32
+BuildRequires : glibc-libc32
 BuildRequires : lz4-dev
 BuildRequires : lz4-dev32
 BuildRequires : xz-dev
@@ -30,6 +35,7 @@ BuildRequires : zlib-dev32
 Patch1: multi-thread-default.patch
 Patch2: notrace.patch
 Patch3: fopen-use-m.patch
+Patch4: allowpgo.patch
 
 %description
 Zstandard, or zstd as short version, is a fast lossless compression algorithm,
@@ -110,6 +116,10 @@ cd %{_builddir}/zstd-1.5.0
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+pushd ..
+cp -a zstd-1.5.0 build32
+popd
 pushd ..
 cp -a zstd-1.5.0 buildavx2
 popd
@@ -122,7 +132,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1633968850
+export SOURCE_DATE_EPOCH=1633975712
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -131,15 +141,41 @@ export CFLAGS="$CFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=a
 export FCFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mno-vzeroupper -mprefer-vector-width=256 "
 export FFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mno-vzeroupper -mprefer-vector-width=256 "
 export CXXFLAGS="$CXXFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mno-vzeroupper -mprefer-vector-width=256 "
-make  PREFIX=%{_prefix} LIBDIR=%{_libdir} zstd
+export CFLAGS_GENERATE="$CFLAGS -fprofile-generate -fprofile-dir=/var/tmp/pgo -fprofile-update=atomic "
+export FCFLAGS_GENERATE="$FCFLAGS -fprofile-generate -fprofile-dir=/var/tmp/pgo -fprofile-update=atomic "
+export FFLAGS_GENERATE="$FFLAGS -fprofile-generate -fprofile-dir=/var/tmp/pgo -fprofile-update=atomic "
+export CXXFLAGS_GENERATE="$CXXFLAGS -fprofile-generate -fprofile-dir=/var/tmp/pgo -fprofile-update=atomic "
+export LDFLAGS_GENERATE="$LDFLAGS -fprofile-generate -fprofile-dir=/var/tmp/pgo -fprofile-update=atomic "
+export CFLAGS_USE="$CFLAGS -fprofile-use -fprofile-dir=/var/tmp/pgo -fprofile-correction "
+export FCFLAGS_USE="$FCFLAGS -fprofile-use -fprofile-dir=/var/tmp/pgo -fprofile-correction "
+export FFLAGS_USE="$FFLAGS -fprofile-use -fprofile-dir=/var/tmp/pgo -fprofile-correction "
+export CXXFLAGS_USE="$CXXFLAGS -fprofile-use -fprofile-dir=/var/tmp/pgo -fprofile-correction "
+export LDFLAGS_USE="$LDFLAGS -fprofile-use -fprofile-dir=/var/tmp/pgo -fprofile-correction "
+CFLAGS="${CFLAGS_GENERATE}" CXXFLAGS="${CXXFLAGS_GENERATE}" FFLAGS="${FFLAGS_GENERATE}" FCFLAGS="${FCFLAGS_GENERATE}" LDFLAGS="${LDFLAGS_GENERATE}"
+make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 
+cat */*/*.c */* | programs/zstd -9 | programs/zstd -d > /dev/null
+cat */*/*.c */* | programs/zstd -1 | programs/zstd -d > /dev/null
+cat */*/*.c */* | programs/zstd -19 | programs/zstd -d > /dev/null
+make clean
+CFLAGS="${CFLAGS_USE}" CXXFLAGS="${CXXFLAGS_USE}" FFLAGS="${FFLAGS_USE}" FCFLAGS="${FCFLAGS_USE}" LDFLAGS="${LDFLAGS_USE}"
+make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
+
+pushd ../build32/
+export PKG_CONFIG_PATH="/usr/lib32/pkgconfig:/usr/share/pkgconfig"
+export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
+make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
+popd
 pushd ../buildavx2
 export CFLAGS="$CFLAGS -m64 -march=x86-64-v3"
 export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3"
 export FFLAGS="$FFLAGS -m64 -march=x86-64-v3"
 export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3"
 export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3"
-make  PREFIX=%{_prefix} LIBDIR=%{_libdir} zstd
+make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 popd
 pushd ../buildavx512
 export CFLAGS="$CFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
@@ -147,15 +183,30 @@ export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
 export FFLAGS="$FFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
 export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
 export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v4"
-make  PREFIX=%{_prefix} LIBDIR=%{_libdir} zstd
+make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1633968850
+export SOURCE_DATE_EPOCH=1633975712
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/zstd-bin
 cp %{_builddir}/zstd-1.5.0/COPYING %{buildroot}/usr/share/package-licenses/zstd-bin/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8
 cp %{_builddir}/zstd-1.5.0/LICENSE %{buildroot}/usr/share/package-licenses/zstd-bin/c4130945ca3d1f8ea4a3e8af36d3c18b2232116c
+pushd ../build32/
+%make_install32 PREFIX=%{_prefix} LIBDIR=%{_libdir}
+if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
+then
+pushd %{buildroot}/usr/lib32/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+if [ -d %{buildroot}/usr/share/pkgconfig ]
+then
+pushd %{buildroot}/usr/share/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+popd
 pushd ../buildavx2/
 %make_install_v3 PREFIX=%{_prefix} LIBDIR=%{_libdir}
 /usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot}/usr/share/clear/optimized-elf/ %{buildroot}/usr/share/clear/filemap/filemap-%{name}

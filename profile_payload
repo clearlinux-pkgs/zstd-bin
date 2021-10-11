@@ -1,4 +1,4 @@
-cat ../*/*/*.c */* | programs/zstd -9 | programs/zstd -d > /dev/null
-cat ../*/*/*.c */* | programs/zstd -1 | programs/zstd -d > /dev/null
-cat ../*/*/*.c */* | programs/zstd -19 | programs/zstd -d > /dev/null
+cat */*/*.c */* | programs/zstd -9 | programs/zstd -d > /dev/null
+cat */*/*.c */* | programs/zstd -1 | programs/zstd -d > /dev/null
+cat */*/*.c */* | programs/zstd -19 | programs/zstd -d > /dev/null
 

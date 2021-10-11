@@ -1,1 +1,1 @@
-PREFIX=%{_prefix} LIBDIR=%{_libdir} zstd
+PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd

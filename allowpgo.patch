@@ -1,0 +1,22 @@
+--- zstd-1.5.0/programs/Makefile~	2021-05-14 14:59:34.000000000 +0000
++++ zstd-1.5.0/programs/Makefile	2021-10-11 16:18:12.611339202 +0000
+@@ -116,7 +116,7 @@
+ HASH ?= md5sum
+ HAVE_HASH :=$(shell echo 1 | $(HASH) > /dev/null && echo 1 || echo 0)
+ 
+-HASH_DIR = conf_$(shell echo $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(LDLIBS) $(ZSTD_FILES) | $(HASH) | cut -f 1 -d " ")
++HASH_DIR = conf_$(shell echo $(CC) $(ZSTD_FILES) | $(HASH) | cut -f 1 -d " ")
+ ifeq ($(HAVE_HASH),0)
+   $(info warning : could not find HASH ($(HASH)), needed to differentiate builds using different flags)
+   BUILD_DIR := obj/generic_noconf
+--- zstd-1.5.0/lib/Makefile~	2021-05-14 14:59:34.000000000 +0000
++++ zstd-1.5.0/lib/Makefile	2021-10-11 16:18:28.195338985 +0000
+@@ -195,7 +195,7 @@
+ endif
+ HASH ?= md5sum
+ 
+-HASH_DIR = conf_$(shell echo $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(ZSTD_FILES) | $(HASH) | cut -f 1 -d " " )
++HASH_DIR = conf_$(shell echo $(CC) $(ZSTD_FILES) | $(HASH) | cut -f 1 -d " " )
+ HAVE_HASH :=$(shell echo 1 | $(HASH) > /dev/null && echo 1 || echo 0)
+ ifeq ($(HAVE_HASH),0)
+   $(info warning : could not find HASH ($(HASH)), needed to differentiate builds using different flags)
