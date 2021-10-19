@@ -7,7 +7,7 @@
 %define keepstatic 1
 Name     : zstd-bin
 Version  : 1.5.0
-Release  : 82
+Release  : 83
 URL      : https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz
 Source0  : https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz
 Source1  : https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz.sig
@@ -102,7 +102,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1634256841
+export SOURCE_DATE_EPOCH=1634686190
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -122,24 +122,24 @@ export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
 make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 popd
 pushd ../buildavx2
-export CFLAGS="$CFLAGS -m64 -march=x86-64-v3"
-export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3"
-export FFLAGS="$FFLAGS -m64 -march=x86-64-v3"
+export CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3"
+export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3"
+export FFLAGS="$FFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3"
 export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3"
 export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3"
 make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 popd
 pushd ../buildavx512
-export CFLAGS="$CFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
-export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
-export FFLAGS="$FFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
+export CFLAGS="$CFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256 -Wl,-z,x86-64-v4"
+export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256 -Wl,-z,x86-64-v4"
+export FFLAGS="$FFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256 -Wl,-z,x86-64-v4"
 export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v4 -mprefer-vector-width=256"
 export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v4"
 make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1634256841
+export SOURCE_DATE_EPOCH=1634686190
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/zstd-bin
 cp %{_builddir}/zstd-1.5.0/COPYING %{buildroot}/usr/share/package-licenses/zstd-bin/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8
