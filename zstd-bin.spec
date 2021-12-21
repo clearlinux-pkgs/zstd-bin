@@ -6,11 +6,11 @@
 #
 %define keepstatic 1
 Name     : zstd-bin
-Version  : 1.5.0
-Release  : 84
-URL      : https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz
-Source0  : https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz
-Source1  : https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz.sig
+Version  : 1.5.1
+Release  : 85
+URL      : https://github.com/facebook/zstd/releases/download/v1.5.1/zstd-1.5.1.tar.gz
+Source0  : https://github.com/facebook/zstd/releases/download/v1.5.1/zstd-1.5.1.tar.gz
+Source1  : https://github.com/facebook/zstd/releases/download/v1.5.1/zstd-1.5.1.tar.gz.sig
 Summary  : Fast lossless compression algorithm library and tools
 Group    : Development/Tools
 License  : BSD-3-Clause GPL-2.0
@@ -34,8 +34,7 @@ BuildRequires : zlib-dev32
 Patch1: multi-thread-default.patch
 Patch2: notrace.patch
 Patch3: fopen-use-m.patch
-Patch4: allowpgo.patch
-Patch5: nolib.patch
+Patch4: nolib.patch
 
 %description
 Zstandard, or zstd as short version, is a fast lossless compression algorithm,
@@ -80,18 +79,17 @@ man components for the zstd-bin package.
 
 
 %prep
-%setup -q -n zstd-1.5.0
-cd %{_builddir}/zstd-1.5.0
+%setup -q -n zstd-1.5.1
+cd %{_builddir}/zstd-1.5.1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
 pushd ..
-cp -a zstd-1.5.0 build32
+cp -a zstd-1.5.1 build32
 popd
 pushd ..
-cp -a zstd-1.5.0 buildavx2
+cp -a zstd-1.5.1 buildavx2
 popd
 
 %build
@@ -99,7 +97,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1636137243
+export SOURCE_DATE_EPOCH=1640117514
 export GCC_IGNORE_WERROR=1
 export CFLAGS="-O2 -g -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wno-error -Wl,-z,max-page-size=0x1000 -march=westmere -mtune=haswell"
 export CXXFLAGS=$CFLAGS
@@ -133,11 +131,11 @@ make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1636137243
+export SOURCE_DATE_EPOCH=1640117514
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/zstd-bin
-cp %{_builddir}/zstd-1.5.0/COPYING %{buildroot}/usr/share/package-licenses/zstd-bin/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8
-cp %{_builddir}/zstd-1.5.0/LICENSE %{buildroot}/usr/share/package-licenses/zstd-bin/c4130945ca3d1f8ea4a3e8af36d3c18b2232116c
+cp %{_builddir}/zstd-1.5.1/COPYING %{buildroot}/usr/share/package-licenses/zstd-bin/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8
+cp %{_builddir}/zstd-1.5.1/LICENSE %{buildroot}/usr/share/package-licenses/zstd-bin/c4130945ca3d1f8ea4a3e8af36d3c18b2232116c
 pushd ../build32/
 %make_install32 PREFIX=%{_prefix} LIBDIR=%{_libdir}
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
