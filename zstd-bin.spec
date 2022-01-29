@@ -7,7 +7,7 @@
 %define keepstatic 1
 Name     : zstd-bin
 Version  : 1.5.1
-Release  : 85
+Release  : 86
 URL      : https://github.com/facebook/zstd/releases/download/v1.5.1/zstd-1.5.1.tar.gz
 Source0  : https://github.com/facebook/zstd/releases/download/v1.5.1/zstd-1.5.1.tar.gz
 Source1  : https://github.com/facebook/zstd/releases/download/v1.5.1/zstd-1.5.1.tar.gz.sig
