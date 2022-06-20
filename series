@@ -3,3 +3,4 @@ notrace.patch
 fopen-use-m.patch
 #allowpgo.patch
 nolib.patch
+cflags.patch
