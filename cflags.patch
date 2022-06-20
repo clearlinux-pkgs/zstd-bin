@@ -18,3 +18,25 @@
  
  zstd_deps = [ libzstd_dep ]
  if use_zlib
+--- zstd-1.5.2/programs/Makefile~	2022-01-20 21:17:18.000000000 +0000
++++ zstd-1.5.2/programs/Makefile	2022-06-20 16:41:02.701639796 +0000
+@@ -28,6 +28,8 @@
+   ALIGN_LOOP =
+ endif
+ 
++CFLAG += "-std=gnu11"
++
+ ZSTDLIB_COMMON_SRC := $(sort $(ZSTD_COMMON_FILES))
+ ZSTDLIB_COMPRESS_SRC := $(sort $(ZSTD_COMPRESS_FILES))
+ ZSTDLIB_DECOMPRESS_SRC := $(sort $(ZSTD_DECOMPRESS_FILES))
+--- zstd-1.5.2/Makefile~	2022-01-20 21:17:18.000000000 +0000
++++ zstd-1.5.2/Makefile	2022-06-20 16:43:02.200887479 +0000
+@@ -18,6 +18,8 @@
+ TESTDIR  = tests
+ FUZZDIR  = $(TESTDIR)/fuzz
+ 
++CFLAGS += "-std=gnu11"
++
+ # Define nul output
+ VOID = /dev/null
+ 

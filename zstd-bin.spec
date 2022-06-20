@@ -7,7 +7,7 @@
 %define keepstatic 1
 Name     : zstd-bin
 Version  : 1.5.2
-Release  : 89
+Release  : 90
 URL      : https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz
 Source0  : https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz
 Source1  : https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz.sig
@@ -91,7 +91,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1655742634
+export SOURCE_DATE_EPOCH=1655744455
 export GCC_IGNORE_WERROR=1
 export CFLAGS="-O2 -g -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wno-error -Wl,-z,max-page-size=0x1000 -march=westmere -mtune=haswell"
 export CXXFLAGS=$CFLAGS
@@ -117,7 +117,7 @@ make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1655742634
+export SOURCE_DATE_EPOCH=1655744455
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/zstd-bin
 cp %{_builddir}/zstd-1.5.2/COPYING %{buildroot}/usr/share/package-licenses/zstd-bin/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8
