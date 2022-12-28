@@ -7,7 +7,7 @@
 %define keepstatic 1
 Name     : zstd-bin
 Version  : 1.5.2
-Release  : 98
+Release  : 99
 URL      : https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz
 Source0  : https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz
 Source1  : https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz.sig
@@ -26,6 +26,9 @@ BuildRequires : xz-dev
 BuildRequires : xz-dev32
 BuildRequires : zlib-dev
 BuildRequires : zlib-dev32
+# Suppress stripping binaries
+%define __strip /bin/true
+%define debug_package %{nil}
 Patch1: multi-thread-default.patch
 Patch2: notrace.patch
 Patch3: fopen-use-m.patch
@@ -91,7 +94,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1669832317
+export SOURCE_DATE_EPOCH=1672250050
 export GCC_IGNORE_WERROR=1
 export CFLAGS="-O2 -g -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wno-error -Wl,-z,max-page-size=0x1000 -march=westmere -mtune=haswell"
 export CXXFLAGS=$CFLAGS
@@ -101,10 +104,10 @@ unset LDFLAGS
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=auto "
-export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=auto "
-export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=auto "
-export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=auto "
+export CFLAGS="$CFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
+export FCFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
+export FFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
+export CXXFLAGS="$CXXFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
 make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 
 pushd ../buildavx2
@@ -117,7 +120,7 @@ make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1669832317
+export SOURCE_DATE_EPOCH=1672250050
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/zstd-bin
 cp %{_builddir}/zstd-%{version}/COPYING %{buildroot}/usr/share/package-licenses/zstd-bin/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8
