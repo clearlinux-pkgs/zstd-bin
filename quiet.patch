@@ -1,0 +1,11 @@
+--- zstd-1.5.5/programs/zstdcli.c~	2023-04-04 20:13:52.000000000 +0000
++++ zstd-1.5.5/programs/zstdcli.c	2023-04-25 23:16:50.911965675 +0000
+@@ -1292,7 +1292,7 @@
+ 
+ #ifdef ZSTD_MULTITHREAD
+     if ((operation==zom_decompress) && (!singleThread) && (nbWorkers > 1)) {
+-        DISPLAYLEVEL(2, "Warning : decompression does not support multi-threading\n");
++//        DISPLAYLEVEL(2, "Warning : decompression does not support multi-threading\n");
+     }
+     if ((nbWorkers==0) && (!singleThread)) {
+         /* automatically set # workers based on # of reported cpus */
