@@ -8,7 +8,7 @@
 %define keepstatic 1
 Name     : zstd-bin
 Version  : 1.5.5
-Release  : 103
+Release  : 104
 URL      : https://github.com/facebook/zstd/releases/download/v1.5.5/zstd-1.5.5.tar.gz
 Source0  : https://github.com/facebook/zstd/releases/download/v1.5.5/zstd-1.5.5.tar.gz
 Source1  : https://github.com/facebook/zstd/releases/download/v1.5.5/zstd-1.5.5.tar.gz.sig
@@ -16,7 +16,6 @@ Summary  : Fast lossless compression algorithm library and tools
 Group    : Development/Tools
 License  : BSD-3-Clause GPL-2.0
 Requires: zstd-bin-bin = %{version}-%{release}
-Requires: zstd-bin-filemap = %{version}-%{release}
 Requires: zstd-bin-license = %{version}-%{release}
 Requires: zstd-bin-man = %{version}-%{release}
 BuildRequires : lz4-dev
@@ -47,18 +46,9 @@ C library, and a command line utility producing and decoding .zst, .gz, .xz and
 Summary: bin components for the zstd-bin package.
 Group: Binaries
 Requires: zstd-bin-license = %{version}-%{release}
-Requires: zstd-bin-filemap = %{version}-%{release}
 
 %description bin
 bin components for the zstd-bin package.
-
-
-%package filemap
-Summary: filemap components for the zstd-bin package.
-Group: Default
-
-%description filemap
-filemap components for the zstd-bin package.
 
 
 %package license
@@ -95,7 +85,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1682464689
+export SOURCE_DATE_EPOCH=1683124681
 export GCC_IGNORE_WERROR=1
 export CFLAGS="-O2 -g -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wno-error -Wl,-z,max-page-size=0x4000 -march=westmere"
 export CXXFLAGS=$CFLAGS
@@ -105,10 +95,10 @@ unset LDFLAGS
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
-export FCFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
-export FFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
-export CXXFLAGS="$CXXFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
+export CFLAGS="$CFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+export FCFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+export FFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+export CXXFLAGS="$CXXFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
 make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 
 pushd ../buildavx2
@@ -121,7 +111,7 @@ make  PREFIX=%{_prefix} LIBDIR=%{_libdir} -j8 zstd
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1682464689
+export SOURCE_DATE_EPOCH=1683124681
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/zstd-bin
 cp %{_builddir}/zstd-%{version}/COPYING %{buildroot}/usr/share/package-licenses/zstd-bin/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8 || :
@@ -137,17 +127,16 @@ popd
 
 %files bin
 %defattr(-,root,root,-)
+/V3/usr/bin/unzstd
+/V3/usr/bin/zstd
+/V3/usr/bin/zstdcat
+/V3/usr/bin/zstdmt
 /usr/bin/unzstd
 /usr/bin/zstd
 /usr/bin/zstdcat
 /usr/bin/zstdgrep
 /usr/bin/zstdless
 /usr/bin/zstdmt
-/usr/share/clear/optimized-elf/bin*
-
-%files filemap
-%defattr(-,root,root,-)
-/usr/share/clear/filemap/filemap-zstd-bin
 
 %files license
 %defattr(0644,root,root,0755)
