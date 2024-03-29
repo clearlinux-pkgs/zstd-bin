@@ -10,7 +10,7 @@
 %define keepstatic 1
 Name     : zstd-bin
 Version  : 1.5.6
-Release  : 107
+Release  : 108
 URL      : https://github.com/facebook/zstd/releases/download/v1.5.6/zstd-1.5.6.tar.gz
 Source0  : https://github.com/facebook/zstd/releases/download/v1.5.6/zstd-1.5.6.tar.gz
 Source1  : https://github.com/facebook/zstd/releases/download/v1.5.6/zstd-1.5.6.tar.gz.sig
@@ -22,8 +22,6 @@ Requires: zstd-bin-license = %{version}-%{release}
 Requires: zstd-bin-man = %{version}-%{release}
 BuildRequires : lz4-dev
 BuildRequires : lz4-dev32
-BuildRequires : xz-dev
-BuildRequires : xz-dev32
 BuildRequires : zlib-dev
 BuildRequires : zlib-dev32
 # Suppress stripping binaries
@@ -87,7 +85,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1711512364
+export SOURCE_DATE_EPOCH=1711736074
 export GCC_IGNORE_WERROR=1
 CLEAR_INTERMEDIATE_CFLAGS="-O2 -g -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wno-error -Wl,-z,max-page-size=0x4000 -march=westmere"
 CLEAR_INTERMEDIATE_CXXFLAGS=$CLEAR_INTERMEDIATE_CFLAGS
@@ -138,7 +136,7 @@ FFLAGS="$CLEAR_INTERMEDIATE_FFLAGS"
 FCFLAGS="$CLEAR_INTERMEDIATE_FCFLAGS"
 ASFLAGS="$CLEAR_INTERMEDIATE_ASFLAGS"
 LDFLAGS="$CLEAR_INTERMEDIATE_LDFLAGS"
-export SOURCE_DATE_EPOCH=1711512364
+export SOURCE_DATE_EPOCH=1711736074
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/zstd-bin
 cp %{_builddir}/zstd-%{version}/COPYING %{buildroot}/usr/share/package-licenses/zstd-bin/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8 || :
