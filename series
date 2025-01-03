@@ -5,3 +5,4 @@ fopen-use-m.patch
 nolib.patch
 cflags.patch
 quiet.patch
+rsyncable-always.patch

@@ -1,0 +1,11 @@
+--- zstd-1.5.6/programs/zstdcli.c~	2024-03-21 22:05:51.000000000 +0000
++++ zstd-1.5.6/programs/zstdcli.c	2025-01-03 22:15:06.431880957 +0000
+@@ -841,7 +841,7 @@
+         adapt = 0,
+         adaptMin = MINCLEVEL,
+         adaptMax = MAXCLEVEL,
+-        rsyncable = 0,
++        rsyncable = 1,
+         nextArgumentsAreFiles = 0,
+         operationResult = 0,
+         separateFiles = 0,
