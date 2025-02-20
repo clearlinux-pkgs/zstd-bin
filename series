@@ -1,8 +1,8 @@
-multi-thread-default.patch
+#multi-thread-default.patch
 notrace.patch
 fopen-use-m.patch
 #allowpgo.patch
 nolib.patch
 cflags.patch
-quiet.patch
+#quiet.patch
 rsyncable-always.patch
